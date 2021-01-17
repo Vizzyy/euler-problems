@@ -21,36 +21,42 @@ print(start)
 
 num_with_longest_chain = 1
 longest_chain_length = 0
-longest_chain = []
+solved_numbers = {}
+
 for i in range(1, 1000000):
     start_num = i
     current_num = start_num
-    current_chain = [start_num]
+    current_chain = 1
 
     while True:
-        if current_num % 2 == 0:
-            current_num /= 2
-        else:
-            current_num = (3*current_num) + 1
 
-        current_chain.append(current_num)
+        if current_num in solved_numbers.keys() and start_num != 1:
+            current_chain += solved_numbers[current_num]
+            current_num = 1
+        else:
+            if current_num % 2 == 0:
+                current_num //= 2
+            else:
+                current_num = (3*current_num) + 1
+
+            current_chain += 1
 
         if current_num == 1:
-            if len(current_chain) > longest_chain_length:
+            if start_num not in solved_numbers.keys() and start_num != 1:
+                solved_numbers[start_num] = current_chain
+
+            if current_chain > longest_chain_length:
                 print(f"i: {i} - {datetime.datetime.now() - start} - longest_chain_length: {longest_chain_length}")
-                longest_chain_length = len(current_chain)
+                longest_chain_length = current_chain
                 num_with_longest_chain = start_num
-                longest_chain = current_chain
             break
-        # elif i % 1000 == 0:
-        #     print(f"i: {i} - {datetime.datetime.now() - start} - longest_chain_length: {longest_chain_length}")
 
 
 print(f"FINISHED")
 end = datetime.datetime.now() - start
 print(end)
 print(f"longest_chain_length: {longest_chain_length} - num_with_longest_chain: {num_with_longest_chain}")
-# print(f"longest_chain: {longest_chain}")
 
-# naive solution
-# ~ 30s exec time
+# Memoization significantly improves performance:
+# FINISHED
+# 0:00:02.588012
